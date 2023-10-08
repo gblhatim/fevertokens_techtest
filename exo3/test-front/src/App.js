@@ -11,7 +11,7 @@ function CandidateForm() {
   });
 
 
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,31 +24,23 @@ function CandidateForm() {
     formDataToSend.append('cv', formData.cv);
 
     try {
-      const response = await fetch('http://localhost:3000/candidate', {
+      const response = await fetch('http://localhost:3001/candidate', {
         method: 'POST',
         body: formDataToSend,
       });
 
-      if (response.ok) {
-        setShowSuccessAlert(true);
-        setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          description: '',
-          cv: null,
-        });
-      }
-    } catch (error) {
+        const responseBody = await response.json();
+        setResponseMessage(responseBody["message"]);
+  } catch (error) {
       console.log(error);
     }
   };
 
   return (
     <div className="container mt-5">
-      {showSuccessAlert && (
-        <div className="alert alert-success">
-          Sent candidate infos.
+      {responseMessage && (
+        <div className="alert ">
+          {responseMessage}
         </div>
       )}
 
